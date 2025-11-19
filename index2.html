@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project Manager — Static HTML/CSS Mockup</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <style>
+    /* ---------- Reset & base ---------- */
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#6ee7b7; --glass:rgba(255,255,255,0.03);
+      --glass-2:rgba(255,255,255,0.02);
+      --radius:14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071226 0%, #071229 60%);color:#e6eef6}
+    a{color:inherit}
+
+    /* ---------- Layout ---------- */
+    .app{
+      display:grid;
+      grid-template-columns:260px 1fr 360px;
+      gap:22px;
+      padding:28px;
+      min-height:100vh;
+      align-items:start;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar{
+      background:linear-gradient(180deg,var(--card), rgba(11,18,32,0.6));
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 6px 30px rgba(0,0,0,0.6);
+      position:sticky; top:28px;
+      height:calc(100vh - 56px);
+      overflow:auto;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042;box-shadow:0 6px 16px rgba(102,126,234,0.18)}
+    .brand h1{font-size:14px;margin:0}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+
+    .projects{margin-top:18px}
+    .projects h3{font-size:13px;margin:6px 0 12px;color:var(--muted)}
+    .project-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:var(--glass);margin-bottom:8px;cursor:pointer}
+    .project-item.active{background:linear-gradient(90deg,rgba(110,231,183,0.08),rgba(96,165,250,0.04));box-shadow:inset 0 0 0 1px rgba(110,231,183,0.04)}
+
+    .add-btn{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#123 0,#256);font-weight:600;font-size:13px}
+
+    /* ---------- Main ---------- */
+    main{
+      padding:12px 0;
+    }
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .search{display:flex;gap:10px;align-items:center;background:var(--glass);padding:10px;border-radius:12px;width:56%}
+    .search input{flex:1;background:transparent;border:0;outline:none;color:inherit}
+    .controls{display:flex;gap:8px;align-items:center}
+    .control{background:var(--glass);padding:10px;border-radius:10px}
+
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;box-shadow:0 8px 30px rgba(7,10,14,0.7)}
+
+    /* project header */
+    .project-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .project-title{display:flex;gap:12px;align-items:center}
+    .chips{display:flex;gap:8px}
+    .chip{font-size:12px;padding:6px 8px;border-radius:999px;background:var(--glass-2);color:var(--muted)}
+
+    /* tasks list */
+    .task{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);margin-bottom:10px}
+    .task .meta{flex:1}
+    .task h4{margin:0 0 6px 0;font-size:14px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .deadline{font-weight:700;font-size:12px;padding:6px 8px;border-radius:8px;background:linear-gradient(90deg,#ffb86b,#ff7a7a);color:#081018}
+
+    /* progress bar */
+    .progress-wrap{background:var(--glass-2);height:10px;border-radius:999px;overflow:hidden}
+    .progress{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),#60a5fa);width:0%}
+    .progress[data-p="10"]{width:10%}
+    .progress[data-p="25"]{width:25%}
+    .progress[data-p="40"]{width:40%}
+    .progress[data-p="55"]{width:55%}
+    .progress[data-p="80"]{width:80%}
+    .progress[data-p="100"]{width:100%}
+
+    /* right column */
+    .right{position:sticky;top:28px;height:calc(100vh - 56px);overflow:auto}
+    .people{display:flex;gap:8px;align-items:center}
+    .avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.06)}
+
+    /* responsive */
+    @media (max-width:1100px){.app{grid-template-columns:220px 1fr}}
+    @media (max-width:820px){.app{grid-template-columns:1fr;padding:12px} .right{display:none}.sidebar{position:relative;height:auto}}
+
+    /* small helpers */
+    .small{font-size:12px;color:var(--muted)}
+    .secondary{background:linear-gradient(90deg,#0b2233, #081622);padding:8px;border-radius:8px}
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">PM</div>
+        <div>
+          <h1>TaskFlow</h1>
+          <p>Lightweight project management mockup</p>
+        </div>
+      </div>
+
+      <div class="projects">
+        <h3>Projects</h3>
+        <div class="project-item active">
+          <div>
+            <div style="font-weight:700">Website Revamp</div>
+            <div class="small">12 tasks · due Nov 28</div>
+          </div>
+          <div class="small">73%</div>
+        </div>
+        <div class="project-item">
+          <div>
+            <div style="font-weight:700">Mobile App</div>
+            <div class="small">8 tasks · due Dec 12</div>
+          </div>
+          <div class="small">45%</div>
+        </div>
+        <div class="project-item">
+          <div>
+            <div style="font-weight:700">Internal Tools</div>
+            <div class="small">5 tasks · due Jan 5</div>
+          </div>
+          <div class="small">22%</div>
+        </div>
+        <a class="add-btn" href="#">+ New Project</a>
+      </div>
+
+      <div style="margin-top:18px">
+        <h3 class="small">Quick filters</h3>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <div class="chip">All</div>
+          <div class="chip">Mine</div>
+          <div class="chip">Due soon</div>
+          <div class="chip">Completed</div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px">
+        <h3 class="small">Tags</h3>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <div class="chip">Frontend</div>
+          <div class="chip">Backend</div>
+          <div class="chip">Design</div>
+          <div class="chip">QA</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:0.7"><path d="M21 21l-4.35-4.35" stroke="#cbd5e1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="#cbd5e1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+          <input placeholder="Search tasks, projects or people" />
+        </div>
+        <div class="controls">
+          <div class="control small">Today · Nov 19</div>
+          <div class="control small">+ Add task</div>
+        </div>
+      </div>
+
+      <section class="grid">
+        <div class="card">
+          <div class="project-header">
+            <div class="project-title">
+              <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#60a5fa,#6ee7b7);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042">WR</div>
+              <div>
+                <h2 style="margin:0">Website Revamp</h2>
+                <div class="small muted">Design + Frontend · 4 members</div>
+              </div>
+            </div>
+            <div style="width:220px">
+              <div class="small muted">Sprint progress</div>
+              <div class="progress-wrap" style="margin-top:8px">
+                <div class="progress" data-p="55"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:6px">
+            <details open>
+              <summary style="cursor:pointer;padding:6px 0;font-weight:600">To do (3)</summary>
+
+              <div class="task">
+                <div class="meta">
+                  <h4>Create landing mockups</h4>
+                  <div class="muted">Design · assigned to <strong>Asha</strong></div>
+                </div>
+                <div style="text-align:right">
+                  <div class="deadline">Nov 24</div>
+                </div>
+              </div>
+
+              <div class="task">
+                <div class="meta">
+                  <h4>Header / Navigation</h4>
+                  <div class="muted">Frontend · assigned to <strong>Ravi</strong></div>
+                </div>
+                <div style="text-align:right">
+                  <div class="deadline">Nov 25</div>
+                </div>
+              </div>
+
+              <div class="task">
+                <div class="meta">
+                  <h4>SEO meta & analytics</h4>
+                  <div class="muted">Marketing · unassigned</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="deadline">Nov 27</div>
+                </div>
+              </div>
+
+            </details>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="project-header">
+            <div class="project-title">
+              <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#fca5a5,#93c5fd);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042">MA</div>
+              <div>
+                <h2 style="margin:0">Mobile App</h2>
+                <div class="small muted">iOS & Android · 6 tasks</div>
+              </div>
+            </div>
+            <div style="width:220px">
+              <div class="small muted">Sprint progress</div>
+              <div class="progress-wrap" style="margin-top:8px">
+                <div class="progress" data-p="25"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:6px">
+            <details>
+              <summary style="cursor:pointer;padding:6px 0;font-weight:600">In progress (2)</summary>
+
+              <div class="task">
+                <div class="meta">
+                  <h4>Auth & onboarding</h4>
+                  <div class="muted">Backend · assigned to <strong>Neha</strong></div>
+                </div>
+                <div style="text-align:right">
+                  <div class="deadline">Dec 1</div>
+                </div>
+              </div>
+
+              <div class="task">
+                <div class="meta">
+                  <h4>Profile screens</h4>
+                  <div class="muted">Frontend · assigned to <strong>Sam</strong></div>
+                </div>
+                <div style="text-align:right">
+                  <div class="deadline">Dec 4</div>
+                </div>
+              </div>
+
+            </details>
+
+            <div style="margin-top:12px">
+              <h4 style="margin:0 0 8px 0">Backlog</h4>
+              <div class="small muted">Ideas & low priority items</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- more cards could be added -->
+      </section>
+
+      <section style="margin-top:18px">
+        <div class="card">
+          <h3 style="margin:0 0 12px 0">Upcoming deadlines</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">Landing mockups review</div>
+                <div class="small muted">Website Revamp · assigned to Asha</div>
+              </div>
+              <div class="small">Nov 24</div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">Auth & onboarding API</div>
+                <div class="small muted">Mobile App · assigned to Neha</div>
+              </div>
+              <div class="small">Dec 01</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="right">
+      <div class="card" style="margin-bottom:14px">
+        <h4 style="margin:0 0 8px 0">Team</h4>
+        <div class="people">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=32" alt="Asha">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=12" alt="Ravi">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=45" alt="Neha">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=5" alt="Sam">
+          <div style="margin-left:8px" class="small muted">+3 more</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 8px 0">Activity</h4>
+        <div class="small muted">Ravi moved "Header / Navigation" to In review · 2h ago</div>
+        <div style="height:12px"></div>
+        <div class="small muted">Asha uploaded "landing_v2.png" · 6h ago</div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- This is a static HTML+CSS mockup. To make it functional, add React + Node.js + a database. -->
+</body>
+</html>
